@@ -1,4 +1,6 @@
-#Cleans the dhcp database of old leases that have expired
+#Script by: Scott Forsyth
+#Last modified: 11/12/2016
+#Goes through and cleans the DHCP for items that our over their lease time.
 
 $computername = read-host "DHCP Server hostname"
 

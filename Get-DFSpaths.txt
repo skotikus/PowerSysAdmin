@@ -1,0 +1,32 @@
+﻿#Script by: Scott Forsyth
+#Contact: scripts@nurvox.com
+#Last modified: 5-15-2018
+
+#Checks for DFSN powershell module
+try {
+    Import-Module dfsn -ErrorAction Stop
+    Write-Host "DFSN Module Found! Running Script..."
+} catch {
+    Write-Host "DFSN Module does not exist... Exiting script" -ForegroundColor Red -BackgroundColor black
+    exit
+}
+
+#grabs domain
+$domain = $(get-addomain).dnsroot
+
+#Gathers the root namespaces
+write-host "Gathering DFS Roots..." -ForegroundColor Cyan
+$rootlist = $(Get-DfsnRoot -domain $domain).path
+
+$results = @()
+
+foreach($root in $rootlist){
+
+write-host "Processing Root Path: $root" -ForegroundColor Yellow
+
+get-dfsnfolder "$root\*" | %{ $results += get-dfsnfoldertarget $_.path | select Path,NameSpacePath,TargetPath}
+
+
+}
+
+$results | export-csv C:\temp\dfsout.csv -NoTypeInformation
